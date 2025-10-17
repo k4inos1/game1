@@ -6,7 +6,8 @@ public class ExperiencePickup : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        var player = other.GetComponent<PlayerController>();
+        var player = other.GetComponent<PlayerController>() as Component;
+        if (player == null) player = other.GetComponent<HumanMale>() as Component ?? other.GetComponentInParent<HumanMale>() as Component;
         if (player != null)
         {
             var upgradeSys = FindObjectOfType<UpgradeSystem>();

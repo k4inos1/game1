@@ -8,19 +8,24 @@ public class Pickup : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        var player = other.GetComponent<PlayerController>();
-        if (player != null)
+        // try to find known player controller types in parent/root
+        var human = other.GetComponent<HumanMale>() ?? other.GetComponentInParent<HumanMale>() ?? other.GetComponentInChildren<HumanMale>();
+
+        if (human != null)
         {
             switch (type)
             {
                 case PickupType.Health:
-                    // implementar si hay salud
+                    // if you implement health on HumanMale or PlayerHealth, add here
+                    var ph = other.GetComponent<PlayerHealth>() ?? other.GetComponentInParent<PlayerHealth>();
+                    if (ph != null) ph.Heal(amount);
                     break;
                 case PickupType.FireRate:
-                    player.fireRate = Mathf.Max(0.05f, player.fireRate - 0.1f * amount);
+                    // HumanMale uses 'fireRate' field
+                    human.fireRate = Mathf.Max(0.05f, human.fireRate - 0.1f * amount);
                     break;
                 case PickupType.Damage:
-                    // si PlayerController tuviera daño
+                    // if your weapon system exposes damage, apply upgrades there
                     break;
             }
             Destroy(gameObject);

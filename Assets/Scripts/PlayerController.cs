@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class HumanMale : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float fireRate = 0.5f;

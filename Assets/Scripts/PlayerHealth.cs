@@ -23,6 +23,14 @@ public class PlayerHealth : MonoBehaviour
         if (uiBar != null) uiBar.Set(currentHealth);
     }
 
+    // Heal the player by amount (clamped to maxHealth)
+    public void Heal(int amount)
+    {
+        currentHealth += amount;
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
+        if (uiBar != null) uiBar.Set(currentHealth);
+    }
+
     void Die()
     {
         Debug.Log("Player muerto");

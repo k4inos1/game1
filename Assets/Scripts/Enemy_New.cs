@@ -1,8 +1,9 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy_New : MonoBehaviour
 {
-    public float speed = 2f;
+    public float speed = 2f; // used if no NavMeshAgent
     public int health = 1;
     public int contactDamage = 1;
     public GameObject deathVFX;
@@ -11,19 +12,38 @@ public class Enemy_New : MonoBehaviour
     private AudioSource audioSource;
 
     Transform target;
+    NavMeshAgent agent;
 
     void Start()
     {
         var playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null) target = playerObj.transform;
         audioSource = GetComponent<AudioSource>();
+
+        agent = GetComponent<NavMeshAgent>();
+        if (agent != null)
+        {
+            // configure agent with fallback values
+            agent.speed = Mathf.Max(0.1f, speed);
+            agent.updateRotation = true;
+            agent.updateUpAxis = true;
+        }
     }
 
     void Update()
     {
         if (target == null) return;
-        Vector3 dir = (target.position - transform.position).normalized;
-        transform.Translate(dir * speed * Time.deltaTime, Space.World);
+
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.SetDestination(target.position);
+        }
+        else
+        {
+            // fallback movement when no NavMesh is available
+            Vector3 dir = (target.position - transform.position).normalized;
+            transform.Translate(dir * speed * Time.deltaTime, Space.World);
+        }
     }
 
     void OnCollisionEnter(Collision other)
